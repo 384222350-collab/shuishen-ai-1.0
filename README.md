@@ -160,3 +160,62 @@ OPENAI_MODEL=支持图片的模型名
 然后直接给机器人发图片，它会根据图片生成当前会话的人格卡。
 
 如果中转不支持视觉输入，请保持关闭；文字人格和聊天不受影响。
+
+## 环境变量与部署（新增）
+
+- 推荐把敏感的 API Key 放在运行环境的环境变量中，或在项目根目录创建一个本地的 `.env` 文件（不要提交到仓库）。仓库已将 `.env` 列入 `.gitignore`。
+- 仓库提供了一个默认示例文件 `env.defaults`（示例），请复制为 `.env` 并编辑具体值：
+
+```bash
+cp env.defaults .env
+```
+
+- 常用环境变量（示例，详见 `env.defaults`）：
+
+	- `OPENAI_BASE_URL`：中转 API 地址
+	- `OPENAI_API_KEY`：中转 API Key（不要提交到 git）
+	- `OPENAI_MODEL`：使用的模型名
+	- `BOT_PLATFORM`：运行平台，取值 `web|wechat|qq`
+	- `WEB_ENABLE_WECHAT_BOT` / `WEB_ENABLE_QQ_BOT`：是否在 web 控制台同时监听对应平台
+	- `QQ_ONEBOT_ACCESS_TOKEN`：OneBot access token（如启用 QQ）
+
+- 在生产环境中，优先通过容器或宿主机的环境变量注入 Key，避免把 Key 写入文件系统。
+
+## 需要搭建的运行环境（新增）
+
+最低建议环境：
+
+- Node.js 18 或以上（建议使用 LTS 版本）
+- npm 8+ 或 yarn
+- Git（用于代码管理与历史清理）
+
+本地快速启动步骤：
+
+1. 克隆仓库并安装依赖：
+
+```bash
+git clone <repo-url>
+cd shuishen\ 2.0
+npm install
+```
+
+2. 准备环境变量（复制示例并填写）：
+
+```bash
+cp env.defaults .env
+# 编辑 .env，填写 OPENAI_API_KEY 等
+```
+
+3. 启动开发模式（Web 控制台）：
+
+```bash
+npm run dev
+```
+
+4. 可选：如果启用 QQ 或 WeChat，按 README 中对应章节配置 OneBot 或扫码登录。
+
+安全与注意事项：
+
+- 本仓库已从历史记录中移除部分敏感文件（API key、微信 memory-card），但如果你在个人或其他分支中曾提交过密钥，请务必在相应服务中撤销/重置密钥。
+- 所有合作者在拉取远程分支后，建议使用 `git fetch && git reset --hard origin/main` 重新同步或直接重新克隆仓库以避免历史冲突。
+
