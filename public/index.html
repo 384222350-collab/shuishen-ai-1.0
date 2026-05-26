@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>人格机器人控制台</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Persona Bot Console</p>
+            <h1>人格机器人控制台</h1>
+          </div>
+          <div class="status" id="status">待测试</div>
+        </header>
+
+        <section class="panel config-panel" aria-label="API 配置">
+          <label>
+            <span>中转 URL</span>
+            <input id="baseUrl" autocomplete="off" placeholder="https://your-relay.example.com/v1" />
+          </label>
+          <label>
+            <span>API Key</span>
+            <input id="apiKey" type="password" autocomplete="off" placeholder="sk-..." />
+          </label>
+          <label>
+            <span>模型</span>
+            <input id="model" autocomplete="off" value="gpt-4o-mini" />
+          </label>
+        </section>
+
+        <section class="panel bot-panel" aria-label="聊天平台启动">
+          <div class="section-head">
+            <p class="eyebrow">Bot Runtime</p>
+            <h2>聊天平台</h2>
+          </div>
+          <div class="bot-actions">
+            <button id="startQq" class="secondary" type="button">启动 QQ 监听</button>
+            <button id="startWechat" class="secondary" type="button">启动微信监听</button>
+            <button id="refreshBots" class="ghost" type="button">刷新状态</button>
+          </div>
+          <div class="bot-status-grid">
+            <div><strong>QQ</strong><span id="qqStatus">stopped</span></div>
+            <div><strong>微信</strong><span id="wechatStatus">stopped</span></div>
+          </div>
+          <div class="wechat-login" id="wechatLogin">
+            <div>
+              <strong>微信扫码登录</strong>
+              <p id="wechatLoginText">点击“启动微信监听”后，这里会显示二维码。</p>
+            </div>
+            <img id="wechatQr" alt="微信登录二维码" />
+          </div>
+        </section>
+
+        <section class="main-grid">
+          <section class="panel input-panel" aria-label="输入区">
+            <div class="tabs" role="tablist">
+              <button class="tab active" data-mode="text" type="button">文字</button>
+              <button class="tab" data-mode="image" type="button">图片</button>
+            </div>
+
+            <div class="mode-view active" id="textMode">
+              <label>
+                <span>文字素材</span>
+                <textarea
+                  id="sourceText"
+                  placeholder="粘贴聊天记录、人物描述、社交主页介绍，或任何能体现说话风格的文字。"
+                ></textarea>
+              </label>
+              <button id="generateText" class="primary" type="button">生成文字人格</button>
+            </div>
+
+            <div class="mode-view" id="imageMode">
+              <label class="dropzone" for="imageInput" id="dropzone">
+                <input id="imageInput" type="file" accept="image/*" />
+                <span>选择图片</span>
+                <strong id="imageName">支持 JPG、PNG、WebP</strong>
+              </label>
+              <img id="preview" class="preview" alt="图片预览" />
+              <button id="generateImage" class="primary" type="button">生成图片人格</button>
+            </div>
+
+            <section class="apply-box" aria-label="应用人格">
+              <div class="section-head">
+                <p class="eyebrow">Apply</p>
+                <h2>应用到聊天</h2>
+              </div>
+              <div class="apply-grid">
+                <label>
+                  <span>平台</span>
+                  <select id="targetPlatform">
+                    <option value="qq-private">QQ 私聊</option>
+                    <option value="qq-group">QQ群</option>
+                    <option value="wechat-contact">微信私聊</option>
+                    <option value="wechat-room">微信群</option>
+                    <option value="custom">自定义</option>
+                  </select>
+                </label>
+                <label>
+                  <span>会话 ID</span>
+                  <input id="targetId" autocomplete="off" placeholder="例如 QQ 号、群号、contact id、room id" />
+                </label>
+              </div>
+              <input id="conversationId" readonly value="qq-private:" />
+              <button id="applyPersona" class="secondary" type="button">应用当前人格</button>
+            </section>
+          </section>
+
+          <section class="panel result-panel" aria-label="人格结果">
+            <div class="result-head">
+              <div>
+                <p class="eyebrow">Generated Persona</p>
+                <h2 id="personaName">还没有人格</h2>
+              </div>
+              <button id="copyJson" class="ghost" type="button">复制 JSON</button>
+            </div>
+
+            <div class="persona-summary" id="personaSummary">输入素材后点击生成，这里会显示人格卡。</div>
+
+            <div class="persona-editor">
+              <label>
+                <span>人格名称</span>
+                <input id="editName" autocomplete="off" />
+              </label>
+              <label>
+                <span>简介</span>
+                <textarea id="editSummary"></textarea>
+              </label>
+              <label>
+                <span>特质，用逗号或顿号分隔</span>
+                <input id="editTraits" autocomplete="off" />
+              </label>
+              <label>
+                <span>语气</span>
+                <textarea id="editTone"></textarea>
+              </label>
+              <label>
+                <span>边界，用逗号或顿号分隔</span>
+                <textarea id="editBoundaries"></textarea>
+              </label>
+              <label>
+                <span>回复规则，用逗号或顿号分隔</span>
+                <textarea id="editReplyRules"></textarea>
+              </label>
+              <button id="savePersonaEdits" class="secondary" type="button">保存人格修改</button>
+            </div>
+
+            <label class="prompt-box">
+              <span>System Prompt</span>
+              <textarea id="systemPrompt"></textarea>
+            </label>
+          </section>
+        </section>
+
+        <section class="panel monitor-panel" aria-label="实时监测">
+          <div class="monitor-head">
+            <div>
+              <p class="eyebrow">Realtime Monitor</p>
+              <h2>实时监测</h2>
+            </div>
+            <button id="clearEvents" class="ghost" type="button">清空</button>
+          </div>
+          <div class="event-list" id="eventList"></div>
+        </section>
+      </section>
+    </main>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
