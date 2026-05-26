@@ -1,0 +1,16 @@
+[Unit]
+Description=Shuishen Persona Bot
+After=network.target
+
+[Service]
+Type=simple
+User=shuishen
+Group=shuishen
+WorkingDirectory=/opt/shuishen
+EnvironmentFile=/etc/default/shuishen
+ExecStart=/usr/bin/node /opt/shuishen/dist/index.js
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

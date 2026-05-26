@@ -219,3 +219,5 @@ npm run dev
 - 本仓库已从历史记录中移除部分敏感文件（API key、微信 memory-card），但如果你在个人或其他分支中曾提交过密钥，请务必在相应服务中撤销/重置密钥。
 - 所有合作者在拉取远程分支后，建议使用 `git fetch && git reset --hard origin/main` 重新同步或直接重新克隆仓库以避免历史冲突。
 
+更多部署选项与容器化说明请参见：[DEPLOYMENT.md](DEPLOYMENT.md)
+

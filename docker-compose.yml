@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  shuishen:
+    build: .
+    image: shuishen-persona-bot:latest
+    container_name: shuishen-persona-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./data:/app/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
